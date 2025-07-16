@@ -7,27 +7,28 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #1a202c;
+            background-color: #808080;
             background-image: radial-gradient(#374151 1px, transparent 1px);
             background-size: 20px 20px;
             overflow-x: hidden;
         }
         .font-fantasy {
-            font-family: 'MedievalSharp', cursive;
+            font-family: 'Creepster', cursive;
+            letter-spacing: 2px;
         }
         .goblin-btn {
             @apply bg-emerald-800 text-yellow-200 font-fantasy text-xl py-2 px-6 rounded-lg border-2 border-emerald-900 shadow-md transform hover:scale-105 transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400;
         }
         .goblin-input {
-            @apply bg-gray-700 border-2 border-gray-600 placeholder-gray-400 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent;
+            @apply bg-gray-200 border-2 border-gray-400 placeholder-gray-500 text-gray-900 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent;
         }
-        /* Força a cor do texto para preto com alta especificidade */
+        /* Força a cor do texto para preto nos inputs, garantindo a sobreposição de qualquer outra regra */
         #item-input, #secret-select {
-            color: black !important;
+            color: #111827 !important; 
         }
         .goblin-card {
             @apply bg-gray-800 bg-opacity-80 backdrop-blur-sm border-2 border-emerald-900 rounded-xl shadow-2xl;
@@ -74,20 +75,21 @@
 <body class="text-white flex flex-col items-center justify-center min-h-screen p-4">
 
     <!-- Botão de Configurações (Engrenagem) -->
-    <button id="settings-btn" class="fixed top-4 right-4 z-40 text-yellow-300 hover:text-yellow-500 transition-colors">
+    <button id="settings-btn" class="fixed top-4 right-4 z-40 text-yellow-300 hover:text-yellow-500 transition-colors" title="Configurações">
         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
     </button>
     
     <!-- Conteúdo Principal -->
-    <div id="app-container" class="w-full max-w-lg mx-auto flex flex-col items-center gap-6">
-        <h1 class="font-fantasy text-5xl md:text-6xl text-yellow-300 text-center select-none">A Escolha do Goblin</h1>
+    <div id="app-container" class="w-full max-w-lg mx-auto flex flex-col items-center gap-4">
+        <h1 class="font-fantasy text-5xl md:text-6xl text-emerald-400 text-center select-none">Roleta Goblin</h1>
         
         <div id="wheel-container" class="relative w-full max-w-[450px] aspect-square">
             <div class="pointer"></div>
             <canvas id="wheelCanvas" width="500" height="500" class="rounded-full w-full h-full"></canvas>
         </div>
 
-        <button id="spin-btn" class="goblin-btn text-3xl px-12 py-4">GIRAR!</button>
+        <button id="spin-btn" class="goblin-btn text-3xl px-12 py-4 mt-4">GIRAR!</button>
+
     </div>
 
     <!-- Painel de Configurações Lateral -->
@@ -100,16 +102,15 @@
         </div>
         
         <div id="secret-destiny-section" class="goblin-card p-4 mb-6 hidden">
-            <label for="secret-select" class="font-fantasy text-xl text-emerald-400 mb-2 block">Forjar o Destino</label>
-            <p class="text-sm text-gray-400 mb-3">Selecione um alvo para garantir que ele seja escolhido no primeiro giro. Depois, a sorte volta ao normal.</p>
+            <label for="secret-select" class="block mb-2 text-xl font-bold text-emerald-400">Forjar o Destino</label>
+            <p class="text-sm text-gray-400 mb-3">Selecione um alvo para garantir que ele seja escolhido. Depois, a sorte volta ao normal.</p>
             <select id="secret-select" class="goblin-input w-full text-sm">
                 <option value="">Deixar a sorte decidir</option>
             </select>
         </div>
 
-        <!-- NOVO: Menu de Aparência -->
         <div class="goblin-card p-4 mb-6">
-            <h3 class="font-fantasy text-xl text-emerald-400 mb-4">Aparência da Roleta</h3>
+            <h3 class="mb-4 text-xl font-bold text-emerald-400">Aparência da Roleta</h3>
             <div class="space-y-4">
                 <div>
                     <label for="wheel-size-slider" class="flex justify-between text-sm font-medium text-gray-300">
@@ -129,7 +130,7 @@
         </div>
 
         <div class="goblin-card p-4 mb-6">
-            <h3 class="font-fantasy text-xl text-emerald-400 mb-4">Adicionar Alvo</h3>
+            <h3 class="mb-4 text-xl font-bold text-emerald-400">Adicionar Alvo</h3>
             <div class="flex flex-col sm:flex-row gap-3">
                 <input type="text" id="item-input" placeholder="Alvo... (ex: Goblin x5)" class="goblin-input w-full">
                 <button id="add-btn" class="goblin-btn whitespace-nowrap">Adicionar</button>
@@ -137,7 +138,10 @@
         </div>
 
         <div class="goblin-card p-4">
-            <h3 class="font-fantasy text-xl text-emerald-400 mb-4">Lista de Alvos</h3>
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-emerald-400">Lista de Alvos</h3>
+                <button id="clear-all-btn" class="text-sm text-red-500 hover:text-red-400 font-bold transition-colors">Limpar Tudo</button>
+            </div>
             <ul id="item-list" class="space-y-2 max-h-60 overflow-y-auto pr-2">
             </ul>
         </div>
@@ -155,7 +159,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Elementos da UI
+            // --- Seletores de Elementos ---
             const canvas = document.getElementById('wheelCanvas');
             const ctx = canvas.getContext('2d');
             const spinBtn = document.getElementById('spin-btn');
@@ -173,78 +177,46 @@
             const settingsTitle = document.getElementById('settings-title');
             const secretDestinySection = document.getElementById('secret-destiny-section');
             const wheelContainer = document.getElementById('wheel-container');
-            
-            // Elementos das novas configurações
             const wheelSizeSlider = document.getElementById('wheel-size-slider');
             const wheelSizeValue = document.getElementById('wheel-size-value');
             const fontSizeSlider = document.getElementById('font-size-slider');
             const fontSizeValue = document.getElementById('font-size-value');
+            const clearAllBtn = document.getElementById('clear-all-btn');
 
-            // Estado da aplicação
+            // --- Estado da Aplicação ---
             let items = [];
             let currentRotationAngle = 0;
             let isSpinning = false;
-            let isFirstSpin = true;
+            let canForgeDestiny = true;
             let settingsTitleClickCount = 0;
-            
-            // Objeto de configurações com valores padrão
-            let settings = {
-                wheelSize: 450,
-                fontSize: 16
-            };
-
+            let settings = { wheelSize: 450, fontSize: 16 };
             const colors = ['#6b21a8', '#991b1b', '#065f46', '#9a3412', '#4a044e', '#881337', '#047857', '#a16207'];
 
-            // --- Funções de Configuração (Salvar/Carregar) ---
-
-            const saveSettings = () => {
-                localStorage.setItem('goblinWheelSettings', JSON.stringify(settings));
-            };
+            // --- Funções de Persistência (localStorage) ---
+            const saveSettings = () => localStorage.setItem('goblinWheelSettings', JSON.stringify(settings));
+            const saveItems = () => localStorage.setItem('goblinWheelItems', JSON.stringify(items));
 
             const applySettings = () => {
-                // Aplica o tamanho da roleta
                 wheelContainer.style.maxWidth = `${settings.wheelSize}px`;
                 wheelSizeSlider.value = settings.wheelSize;
                 wheelSizeValue.textContent = `${settings.wheelSize}px`;
-
-                // Aplica o tamanho da fonte
                 fontSizeSlider.value = settings.fontSize;
                 fontSizeValue.textContent = `${settings.fontSize}px`;
-
-                // Redesenha a roleta com as novas configurações
                 drawWheel();
             };
             
-            const loadSettings = () => {
+            const loadState = () => {
                 const savedSettings = localStorage.getItem('goblinWheelSettings');
-                if (savedSettings) {
-                    settings = JSON.parse(savedSettings);
-                }
+                if (savedSettings) settings = JSON.parse(savedSettings);
+                
+                const savedItems = localStorage.getItem('goblinWheelItems');
+                items = savedItems ? JSON.parse(savedItems) : [];
+                
                 applySettings();
-            };
-            
-            const loadItems = () => {
-                 const savedItems = localStorage.getItem('goblinWheelItems');
-                 if (savedItems) {
-                    items = JSON.parse(savedItems);
-                 } else {
-                    // Itens padrão se não houver nada salvo
-                    items = [
-                        'Limpar a latrina do ogro',
-                        'Polir as moedas do chefe',
-                        'Roubar cogumelos da floresta',
-                        'Contar as aranhas da caverna'
-                    ];
-                 }
-            };
-            
-            const saveItems = () => {
-                localStorage.setItem('goblinWheelItems', JSON.stringify(items));
+                updateListUI();
             };
 
-
-            // --- Funções da Roleta ---
-
+            // --- Funções Principais da Roleta ---
             const drawWheel = () => {
                 const numItems = items.length;
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -262,7 +234,6 @@
                 }
 
                 const anglePerItem = (2 * Math.PI) / numItems;
-                // Usa o tamanho da fonte da configuração
                 ctx.font = `bold ${settings.fontSize}px Inter`;
 
                 items.forEach((item, index) => {
@@ -278,12 +249,10 @@
                     ctx.save();
                     ctx.fillStyle = 'white';
                     ctx.translate(250, 250);
-                    const textAngle = angle + anglePerItem / 2;
-                    ctx.rotate(textAngle);
+                    ctx.rotate(angle + anglePerItem / 2);
                     ctx.textAlign = 'right';
                     ctx.textBaseline = 'middle';
                     
-                    // Lógica para truncar texto longo
                     const maxTextWidth = 220;
                     let truncatedText = item;
                     if (ctx.measureText(truncatedText).width > maxTextWidth) {
@@ -298,16 +267,21 @@
             };
 
             const updateListUI = () => {
+                // Atualiza a lista de alvos visível
                 itemList.innerHTML = '';
-                secretSelect.innerHTML = '<option value="">Deixar a sorte decidir</option>';
                 items.forEach((item, index) => {
                     const li = document.createElement('li');
                     li.className = 'flex justify-between items-center bg-gray-700 p-2 rounded';
                     li.innerHTML = `<span class="truncate pr-2">${item}</span><button data-index="${index}" class="remove-btn text-red-400 hover:text-red-600 font-bold text-xl">&times;</button>`;
                     itemList.appendChild(li);
-                    
+                });
+
+                // Atualiza a lista do "Forjar Destino" com itens únicos
+                secretSelect.innerHTML = '<option value="">Deixar a sorte decidir</option>';
+                const uniqueItems = [...new Set(items)]; 
+                uniqueItems.forEach(item => {
                     const option = document.createElement('option');
-                    option.value = index;
+                    option.value = item;
                     option.textContent = item;
                     secretSelect.appendChild(option);
                 });
@@ -323,11 +297,8 @@
                 if (match) {
                     const name = match[1].trim();
                     const count = parseInt(match[2], 10);
-
                     if (name && !isNaN(count) && count > 0) {
-                        for (let i = 0; i < count; i++) {
-                            items.push(name);
-                        }
+                        for (let i = 0; i < count; i++) items.push(name);
                     } else {
                         items.push(rawValue);
                     }
@@ -336,14 +307,21 @@
                 }
 
                 itemInput.value = '';
-                saveItems(); // Salva a lista de itens
+                saveItems();
                 updateListUI();
                 drawWheel();
             };
             
             const removeItem = (index) => {
                 items.splice(index, 1);
-                saveItems(); // Salva a lista de itens
+                saveItems();
+                updateListUI();
+                drawWheel();
+            };
+
+            const clearAllItems = () => {
+                items = [];
+                saveItems();
                 updateListUI();
                 drawWheel();
             };
@@ -355,12 +333,16 @@
                 const numItems = items.length;
                 const anglePerItem = 360 / numItems;
                 let targetIndex;
-                let isForged = false;
 
-                if (isFirstSpin && secretSelect.value !== "") {
-                    targetIndex = parseInt(secretSelect.value, 10);
-                    isForged = true;
-                    isFirstSpin = false; 
+                if (canForgeDestiny && secretSelect.value !== "") {
+                    const selectedItemName = secretSelect.value;
+                    targetIndex = items.indexOf(selectedItemName);
+                    
+                    if (targetIndex === -1) {
+                        targetIndex = Math.floor(Math.random() * numItems);
+                    }
+                    
+                    canForgeDestiny = false; 
                     secretSelect.value = "";
                 } else {
                     targetIndex = Math.floor(Math.random() * numItems);
@@ -369,24 +351,21 @@
                 const pointerAngle = 270;
                 const targetSliceCenter = (targetIndex * anglePerItem) + (anglePerItem / 2);
                 const targetAngle = pointerAngle - targetSliceCenter;
-
                 const extraSpins = (5 + Math.floor(Math.random() * 6)) * 360;
                 let finalAngle = targetAngle + extraSpins;
 
-                if (!isForged) {
-                    const jitter = (Math.random() * (anglePerItem * 0.9)) - (anglePerItem * 0.45);
-                    finalAngle += jitter;
-                }
+                // Adiciona o desvio aleatório para tornar o giro mais natural
+                const jitter = (Math.random() * (anglePerItem * 0.9)) - (anglePerItem * 0.45);
+                finalAngle += jitter;
                 
                 currentRotationAngle += finalAngle - (currentRotationAngle % 360);
-
                 canvas.style.transform = `rotate(${currentRotationAngle}deg)`;
 
                 setTimeout(() => {
-                    const winner = items[targetIndex];
-                    resultText.textContent = winner;
+                    resultText.textContent = items[targetIndex];
                     resultModal.classList.remove('hidden');
                     isSpinning = false;
+                    canForgeDestiny = true; 
                 }, 10000);
             };
 
@@ -403,14 +382,11 @@
             };
 
             // --- Event Listeners ---
-            
-            // Listeners para os novos sliders de configuração
             wheelSizeSlider.addEventListener('input', (e) => {
                 settings.wheelSize = e.target.value;
                 wheelContainer.style.maxWidth = `${settings.wheelSize}px`;
                 wheelSizeValue.textContent = `${settings.wheelSize}px`;
             });
-            // Salva ao soltar o mouse para não sobrecarregar o localStorage
             wheelSizeSlider.addEventListener('change', saveSettings); 
 
             fontSizeSlider.addEventListener('input', (e) => {
@@ -418,36 +394,24 @@
                 fontSizeValue.textContent = `${settings.fontSize}px`;
                 drawWheel();
             });
-            // Salva ao soltar o mouse
             fontSizeSlider.addEventListener('change', saveSettings);
 
-            // Listeners existentes
             addBtn.addEventListener('click', addItem);
-            itemInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') addItem();
-            });
-            itemList.addEventListener('click', (e) => {
-                if (e.target.classList.contains('remove-btn')) {
-                    removeItem(parseInt(e.target.dataset.index, 10));
-                }
-            });
+            itemInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') addItem(); });
+            itemList.addEventListener('click', (e) => { if (e.target.classList.contains('remove-btn')) removeItem(parseInt(e.target.dataset.index, 10)); });
             spinBtn.addEventListener('click', spinWheel);
+            clearAllBtn.addEventListener('click', clearAllItems);
             closeModalBtn.addEventListener('click', () => resultModal.classList.add('hidden'));
             settingsBtn.addEventListener('click', openSettings);
             closeSettingsBtn.addEventListener('click', closeSettings);
             panelOverlay.addEventListener('click', closeSettings);
             settingsTitle.addEventListener('click', () => {
                 settingsTitleClickCount++;
-                if (settingsTitleClickCount >= 3) {
-                    secretDestinySection.classList.remove('hidden');
-                }
+                if (settingsTitleClickCount >= 3) secretDestinySection.classList.remove('hidden');
             });
 
             // --- Inicialização ---
-            loadSettings(); // Carrega e aplica as configurações de aparência
-            loadItems(); // Carrega os itens da roleta
-            updateListUI(); // Atualiza a lista na UI
-            // drawWheel() já é chamado dentro de loadSettings, então não precisa chamar de novo
+            loadState();
         });
     </script>
 </body>
