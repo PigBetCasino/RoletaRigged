@@ -11,12 +11,10 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #808080;
+            background-color: #1a202c;
             background-image: radial-gradient(#374151 1px, transparent 1px);
             background-size: 20px 20px;
             overflow-x: hidden;
-            /* Adicionado para zoom de 120% */
-            zoom: 1.2;
         }
         .font-fantasy {
             font-family: 'Creepster', cursive;
@@ -82,15 +80,15 @@
     </button>
     
     <!-- Conteúdo Principal -->
-    <div id="app-container" class="w-full max-w-lg mx-auto flex flex-col items-center gap-4">
-        <h1 class="font-fantasy text-5xl md:text-6xl text-emerald-400 text-center select-none">Roleta Goblin</h1>
+    <div id="app-container" class="w-full max-w-2xl mx-auto flex flex-col items-center gap-4">
+        <h1 class="font-fantasy text-5xl md:text-6xl text-emerald-400 text-center select-none">A Escolha do Goblin</h1>
         
-        <div id="wheel-container" class="relative w-full max-w-[450px] aspect-square">
+        <div id="wheel-container" class="relative w-full max-w-[600px] aspect-square">
             <div class="pointer"></div>
             <canvas id="wheelCanvas" width="500" height="500" class="rounded-full w-full h-full"></canvas>
         </div>
 
-        <button id="spin-btn" class="goblin-btn text-3xl px-12 py-4 mt-4">GIRAR!</button>
+        <button id="spin-btn" class="goblin-btn text-3xl px-12 py-4 mt-6">GIRAR!</button>
 
     </div>
 
@@ -117,16 +115,16 @@
                 <div>
                     <label for="wheel-size-slider" class="flex justify-between text-sm font-medium text-gray-300">
                         <span>Tamanho da Roleta</span>
-                        <span id="wheel-size-value">450px</span>
+                        <span id="wheel-size-value">600px</span>
                     </label>
-                    <input id="wheel-size-slider" type="range" min="300" max="600" value="450" class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer">
+                    <input id="wheel-size-slider" type="range" min="300" max="800" value="600" class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer">
                 </div>
                 <div>
                     <label for="font-size-slider" class="flex justify-between text-sm font-medium text-gray-300">
                         <span>Tamanho da Fonte</span>
-                        <span id="font-size-value">16px</span>
+                        <span id="font-size-value">20px</span>
                     </label>
-                    <input id="font-size-slider" type="range" min="10" max="28" value="16" class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer">
+                    <input id="font-size-slider" type="range" min="10" max="32" value="20" class="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer">
                 </div>
             </div>
         </div>
@@ -191,7 +189,7 @@
             let isSpinning = false;
             let canForgeDestiny = true;
             let settingsTitleClickCount = 0;
-            let settings = { wheelSize: 450, fontSize: 16 };
+            let settings = { wheelSize: 600, fontSize: 20 };
             const colors = ['#6b21a8', '#991b1b', '#065f46', '#9a3412', '#4a044e', '#881337', '#047857', '#a16207'];
 
             // --- Funções de Persistência (localStorage) ---
@@ -356,7 +354,6 @@
                 const extraSpins = (5 + Math.floor(Math.random() * 6)) * 360;
                 let finalAngle = targetAngle + extraSpins;
 
-                // Adiciona o desvio aleatório para tornar o giro mais natural
                 const jitter = (Math.random() * (anglePerItem * 0.9)) - (anglePerItem * 0.45);
                 finalAngle += jitter;
                 
