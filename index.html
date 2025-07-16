@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Escolha do Goblin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c;
+            background-image: radial-gradient(#374151 1px, transparent 1px);
+            background-size: 20px 20px;
+            overflow-x: hidden;
+        }
+        .font-fantasy {
+            font-family: 'MedievalSharp', cursive;
+        }
+        .goblin-btn {
+            @apply bg-emerald-800 text-yellow-200 font-fantasy text-xl py-2 px-6 rounded-lg border-2 border-emerald-900 shadow-md transform hover:scale-105 transition-transform duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400;
+        }
+        .goblin-input {
+            @apply bg-gray-700 border-2 border-gray-600 placeholder-gray-400 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent;
+        }
+        /* CORRIGIDO: Força a cor do texto para preto com alta especificidade */
+        #item-input, #secret-select {
+            color: black !important;
+        }
+        .goblin-card {
+            @apply bg-gray-800 bg-opacity-80 backdrop-blur-sm border-2 border-emerald-900 rounded-xl shadow-2xl;
+        }
+        #wheelCanvas {
+            transition: transform 10s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        .pointer {
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 40px solid #fBBF24; /* Amarelo-dourado */
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.5));
+        }
+        #settings-panel {
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(100%);
+        }
+        #settings-panel.open {
+            transform: translateX(0);
+        }
+        /* Estilo para a barra de rolagem */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #2d3748;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4a5568;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #718096;
+        }
+    </style>
+</head>
+<body class="text-white flex flex-col items-center justify-center min-h-screen p-4">
+
+    <!-- Botão de Configurações (Engrenagem) -->
+    <button id="settings-btn" class="fixed top-4 right-4 z-40 text-yellow-300 hover:text-yellow-500 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+    </button>
+    
+    <!-- Conteúdo Principal -->
+    <div id="app-container" class="w-full max-w-lg mx-auto flex flex-col items-center gap-6">
+        <h1 class="font-fantasy text-5xl md:text-6xl text-yellow-300 text-center select-none">A Escolha do Goblin</h1>
+        
+        <div id="wheel-container" class="relative w-full max-w-[450px] aspect-square">
+            <div class="pointer"></div>
+            <canvas id="wheelCanvas" width="500" height="500" class="rounded-full w-full h-full"></canvas>
+        </div>
+
+        <button id="spin-btn" class="goblin-btn text-3xl px-12 py-4">GIRAR!</button>
+    </div>
+
+    <!-- Painel de Configurações Lateral -->
+    <div id="settings-panel" class="fixed top-0 right-0 h-full w-full max-w-sm bg-gray-900 z-50 p-6 shadow-2xl overflow-y-auto goblin-card border-l-4 border-emerald-900">
+        <div class="flex justify-between items-center mb-6">
+            <h2 id="settings-title" class="font-fantasy text-3xl text-emerald-400 cursor-pointer select-none" title="Um segredo pode estar aqui...">Configurações</h2>
+            <button id="close-settings-btn" class="text-gray-400 hover:text-white p-2 rounded-full">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        
+        <div id="secret-destiny-section" class="goblin-card p-4 mb-6 hidden">
+            <label for="secret-select" class="font-fantasy text-xl text-emerald-400 mb-2 block">Forjar o Destino</label>
+            <p class="text-sm text-gray-400 mb-3">Selecione um alvo para garantir que ele seja escolhido no primeiro giro. Depois, a sorte volta ao normal.</p>
+            <select id="secret-select" class="goblin-input w-full text-sm">
+                <option value="">Deixar a sorte decidir</option>
+            </select>
+        </div>
+
+        <div class="goblin-card p-4 mb-6">
+            <h3 class="font-fantasy text-xl text-emerald-400 mb-4">Adicionar Alvo</h3>
+            <div class="flex flex-col sm:flex-row gap-3">
+                <input type="text" id="item-input" placeholder="Alvo... (ex: Goblin x5)" class="goblin-input w-full">
+                <button id="add-btn" class="goblin-btn whitespace-nowrap">Adicionar</button>
+            </div>
+        </div>
+
+        <div class="goblin-card p-4">
+            <h3 class="font-fantasy text-xl text-emerald-400 mb-4">Lista de Alvos</h3>
+            <ul id="item-list" class="space-y-2 max-h-60 overflow-y-auto pr-2">
+            </ul>
+        </div>
+    </div>
+    <div id="panel-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
+
+    <div id="result-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50 p-4">
+        <div class="goblin-card text-center p-8 max-w-md w-full">
+            <h2 class="font-fantasy text-3xl text-yellow-300 mb-4">O Goblin Escolheu...</h2>
+            <p id="result-text" class="text-4xl font-bold text-white my-6 break-words"></p>
+            <button id="close-modal-btn" class="goblin-btn">OK!</button>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('wheelCanvas');
+            const ctx = canvas.getContext('2d');
+            const spinBtn = document.getElementById('spin-btn');
+            const itemInput = document.getElementById('item-input');
+            const addBtn = document.getElementById('add-btn');
+            const itemList = document.getElementById('item-list');
+            const resultModal = document.getElementById('result-modal');
+            const resultText = document.getElementById('result-text');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const secretSelect = document.getElementById('secret-select');
+            const settingsBtn = document.getElementById('settings-btn');
+            const settingsPanel = document.getElementById('settings-panel');
+            const closeSettingsBtn = document.getElementById('close-settings-btn');
+            const panelOverlay = document.getElementById('panel-overlay');
+            const settingsTitle = document.getElementById('settings-title');
+            const secretDestinySection = document.getElementById('secret-destiny-section');
+
+            let items = [
+                'Limpar a latrina do ogro',
+                'Polir as moedas do chefe',
+                'Roubar cogumelos da floresta',
+                'Contar as aranhas da caverna'
+            ];
+            let currentRotationAngle = 0;
+            let isSpinning = false;
+            let isFirstSpin = true;
+            let settingsTitleClickCount = 0;
+
+            const colors = ['#6b21a8', '#991b1b', '#065f46', '#9a3412', '#4a044e', '#881337', '#047857', '#a16207'];
+
+            const drawWheel = () => {
+                const numItems = items.length;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                if (numItems === 0) {
+                    ctx.fillStyle = '#4a5568';
+                    ctx.beginPath();
+                    ctx.arc(250, 250, 250, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = 'white';
+                    ctx.font = '20px Inter';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Adicione itens para girar!', 250, 250);
+                    return;
+                }
+
+                const anglePerItem = (2 * Math.PI) / numItems;
+                const fontSize = Math.max(8, 22 - Math.floor(numItems / 2));
+                ctx.font = `bold ${fontSize}px Inter`;
+
+                items.forEach((item, index) => {
+                    const angle = index * anglePerItem;
+                    ctx.fillStyle = colors[index % colors.length];
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(250, 250);
+                    ctx.arc(250, 250, 250, angle, angle + anglePerItem);
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    ctx.save();
+                    ctx.fillStyle = 'white';
+                    ctx.translate(250, 250);
+                    const textAngle = angle + anglePerItem / 2;
+                    ctx.rotate(textAngle);
+                    ctx.textAlign = 'right';
+                    ctx.textBaseline = 'middle';
+                    
+                    const maxTextWidth = 220;
+                    let truncatedText = item;
+                    if (ctx.measureText(truncatedText).width > maxTextWidth) {
+                        while(ctx.measureText(truncatedText + '...').width > maxTextWidth && truncatedText.length > 0) {
+                            truncatedText = truncatedText.slice(0, -1);
+                        }
+                        truncatedText += '...';
+                    }
+                    ctx.fillText(truncatedText, 240, 0);
+                    ctx.restore();
+                });
+            };
+
+            const updateListUI = () => {
+                itemList.innerHTML = '';
+                secretSelect.innerHTML = '<option value="">Deixar a sorte decidir</option>';
+                items.forEach((item, index) => {
+                    const li = document.createElement('li');
+                    li.className = 'flex justify-between items-center bg-gray-700 p-2 rounded';
+                    li.innerHTML = `<span class="truncate pr-2">${item}</span><button data-index="${index}" class="remove-btn text-red-400 hover:text-red-600 font-bold text-xl">&times;</button>`;
+                    itemList.appendChild(li);
+                    
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = item;
+                    secretSelect.appendChild(option);
+                });
+            };
+            
+            const addItem = () => {
+                const rawValue = itemInput.value.trim();
+                if (!rawValue) return;
+
+                const multiplierRegex = /(.+?)\s*x\s*(\d+)$/i;
+                const match = rawValue.match(multiplierRegex);
+
+                if (match) {
+                    const name = match[1].trim();
+                    const count = parseInt(match[2], 10);
+
+                    if (name && !isNaN(count) && count > 0) {
+                        for (let i = 0; i < count; i++) {
+                            items.push(name);
+                        }
+                    } else {
+                        items.push(rawValue);
+                    }
+                } else {
+                    items.push(rawValue);
+                }
+
+                itemInput.value = '';
+                updateListUI();
+                drawWheel();
+            };
+            
+            const removeItem = (index) => {
+                items.splice(index, 1);
+                updateListUI();
+                drawWheel();
+            };
+            
+            const spinWheel = () => {
+                if (isSpinning || items.length < 2) return;
+                isSpinning = true;
+
+                const numItems = items.length;
+                const anglePerItem = 360 / numItems;
+                let targetIndex;
+                let isForged = false;
+
+                if (isFirstSpin && secretSelect.value !== "") {
+                    targetIndex = parseInt(secretSelect.value, 10);
+                    isForged = true;
+                    isFirstSpin = false; 
+                    secretSelect.value = "";
+                } else {
+                    targetIndex = Math.floor(Math.random() * numItems);
+                }
+                
+                const pointerAngle = 270;
+                const targetSliceCenter = (targetIndex * anglePerItem) + (anglePerItem / 2);
+                const targetAngle = pointerAngle - targetSliceCenter;
+
+                const extraSpins = (5 + Math.floor(Math.random() * 6)) * 360;
+                let finalAngle = targetAngle + extraSpins;
+
+                if (!isForged) {
+                    const jitter = (Math.random() * (anglePerItem * 0.9)) - (anglePerItem * 0.45);
+                    finalAngle += jitter;
+                }
+                
+                currentRotationAngle += finalAngle - (currentRotationAngle % 360);
+
+                canvas.style.transform = `rotate(${currentRotationAngle}deg)`;
+
+                setTimeout(() => {
+                    const winner = items[targetIndex];
+                    resultText.textContent = winner;
+                    resultModal.classList.remove('hidden');
+                    isSpinning = false;
+                }, 10000);
+            };
+
+            const openSettings = () => {
+                settingsPanel.classList.add('open');
+                panelOverlay.classList.remove('hidden');
+            };
+
+            const closeSettings = () => {
+                settingsPanel.classList.remove('open');
+                panelOverlay.classList.add('hidden');
+                secretDestinySection.classList.add('hidden');
+                settingsTitleClickCount = 0;
+            };
+
+            addBtn.addEventListener('click', addItem);
+            itemInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') addItem();
+            });
+            itemList.addEventListener('click', (e) => {
+                if (e.target.classList.contains('remove-btn')) {
+                    removeItem(parseInt(e.target.dataset.index, 10));
+                }
+            });
+            spinBtn.addEventListener('click', spinWheel);
+            closeModalBtn.addEventListener('click', () => resultModal.classList.add('hidden'));
+            settingsBtn.addEventListener('click', openSettings);
+            closeSettingsBtn.addEventListener('click', closeSettings);
+            panelOverlay.addEventListener('click', closeSettings);
+            settingsTitle.addEventListener('click', () => {
+                settingsTitleClickCount++;
+                if (settingsTitleClickCount >= 3) {
+                    secretDestinySection.classList.remove('hidden');
+                }
+            });
+
+            updateListUI();
+            drawWheel();
+        });
+    </script>
+</body>
+</html>
